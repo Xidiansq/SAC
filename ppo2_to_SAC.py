@@ -30,7 +30,7 @@ ay = []  # 定义一个 y 轴的空列表用来接收动态的数据
 plt.ion()  # 开启一个画图的窗口
 
 #hello111
-
+print("hello")
     
 class ReplayBuffer:
     def __init__(self,size):
