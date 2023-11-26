@@ -29,45 +29,7 @@ ax = []  # 定义一个 x 轴的空列表用来接收动态的数据
 ay = []  # 定义一个 y 轴的空列表用来接收动态的数据
 plt.ion()  # 开启一个画图的窗口
 
-
-####多幅子图
-# plt.figure()
-# plt.subplot(2,1,1)
-
-# class ReplayBuffer:
-#     """
-#     A buffer for storing trajectories experienced by a PPO agent interacting
-#     with the environment, and using Generalized Advantage Estimation (GAE-Lambda)
-#     for calculating the advantages of state-action pairs.
-#     """
-
-#     def __init__(self, obs_dim, rbg_dim, inv_dim, max_req, act_dim, size, ass_poss,gamma=0.99, lam=0.95):
-#         self.max_req = max_req
-#         self.obs_buf = np.zeros(core2_to_SAC.combined_shape(size, obs_dim), dtype=np.float32)
-#         self.rbg_buf = np.zeros(core2_to_SAC.combined_shape(size, rbg_dim), dtype=np.int) #rbg占用情况
-#         self.inv_buf = np.zeros(core2_to_SAC.combined_shape(size, inv_dim), dtype=np.int) #无效请求标志位（掩码）
-#         self.obs2_buf = np.zeros(core2_to_SAC.combined_shape(size, obs_dim), dtype=np.float32)
-#         self.rbg2_buf = np.zeros(core2_to_SAC.combined_shape(size, rbg_dim), dtype=np.int) #rbg占用情况
-#         self.inv2_buf = np.zeros(core2_to_SAC.combined_shape(size, inv_dim), dtype=np.int) #无效请求标志位（掩码）
-#         self.act_buf = np.zeros(core2_to_SAC.combined_shape(size, act_dim*ass_poss), dtype=np.float32)
-#         self.rew_buf = np.zeros(size, dtype=np.float32)
-#         self.done_buf = np.zeros(size, dtype=np.float32)
-#         self.ptr, self.size, self.max_size = 0, 0, size
-#         self.tti2ptr = {}
-#         self.gamma, self.lam = gamma, lam
-#         self.buffer = collections.deque(maxlen = size)
-
-#     def store_pending(self, tti, obs, act, obs2):
-#         """
-#         Append one timestep of agent-environment interaction to the buffer.
-#         """
-#         self.tti2ptr[tti] = (obs, act, obs2)
-
-#     def store(self, obs, act, rew, next_obs, done):
-#         if self.ptr < self.max_size:  # buffer has to have room so you can store
-#             self.obs_buf[self.ptr] = obs['Requests']  
-#             self.rbg_buf[self.ptr] = obs['RbgMap']
-#             self.inv_buf[self.ptr] = obs['InvFlag']  
+#hello111
 
     
 class ReplayBuffer:
