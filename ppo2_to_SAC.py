@@ -69,46 +69,12 @@ plt.ion()  # 开启一个画图的窗口
 #             self.rbg_buf[self.ptr] = obs['RbgMap']
 #             self.inv_buf[self.ptr] = obs['InvFlag']  
 
-#             self.obs2_buf[self.ptr] = next_obs['Requests']
-#             self.rbg2_buf[self.ptr] = next_obs['RbgMap']
-#             self.inv2_buf[self.ptr] = next_obs['InvFlag']
-            
-#             self.act_buf[self.ptr] = act
-#             self.rew_buf[self.ptr] = rew
-#             self.done_buf[self.ptr] = done
-#             self.ptr += 1
-#             return True
-
-#     def __len__(self):
-#         return self.ptr
-    
-#     def sample_batch(self, batch_size):
-#         idxs = np.random.randint(0, self.ptr, size=batch_size)
-#         batch = dict(obs = tuple(self.obs_buf[idxs]),
-#                      rbg = tuple(self.rbg_buf[idxs]),
-#                      inv = tuple(self.inv_buf[idxs]),
-#                      obs2 = tuple(self.obs2_buf[idxs]),
-#                      rbg2 = tuple(self.rbg2_buf[idxs]),
-#                      inv2 = tuple(self.inv2_buf[idxs]),
-#                      act=tuple(self.act_buf[idxs]),
-#                      rew=tuple(self.rew_buf[idxs]),
-#                      done=tuple(self.done_buf[idxs]))
-#         # batch = dict(obs = self.obs_buf[idxs],
-#         #              rbg = self.rbg_buf[idxs],
-#         #              inv = self.inv_buf[idxs],
-#         #              obs2 = self.obs2_buf[idxs],
-#         #              rbg2 = self.rbg2_buf[idxs],
-#         #              inv2 = self.inv2_buf[idxs],
-#         #              act=self.act_buf[idxs],
-#         #              rew=self.rew_buf[idxs],
-#         #              done=self.done_buf[idxs])
-#         return {k: torch.as_tensor(v, dtype=torch.float32) for k,v in batch.items()}
     
 class ReplayBuffer:
     def __init__(self,size):
 
         self.buffer = collections.deque(maxlen=size) 
-        self.ptr = 0
+        self.ptr = 1
     def store(self, obs, act, rew, next_obs, done): 
         obs1_buf = obs['Requests']
         rbg1_buf = obs['RbgMap']
