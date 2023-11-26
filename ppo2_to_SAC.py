@@ -341,7 +341,8 @@ def sac(env_fn, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs=dict(), seed
     log_alpha.requires_grad = True  # 可以对alpha求梯度
     log_alpha_optimizer = torch.optim.Adam([log_alpha],lr=alpha_Ir)
     # target_entropy = target_entropy  # 目标熵的大小
-    target_entropy = 0.98*(-np.log(1/rbgnum*ass_poss))
+    # target_entropy = 0.98*(-np.log(1/rbgnum*ass_poss))
+    target_entropy = 0.98*(-np.log(rbgnum*ass_poss))
 
 
     # Set up experience buffer
