@@ -29,14 +29,86 @@ ax = []  # 定义一个 x 轴的空列表用来接收动态的数据
 ay = []  # 定义一个 y 轴的空列表用来接收动态的数据
 plt.ion()  # 开启一个画图的窗口
 
-#hello111
-print("hello")
+
+####多幅子图
+# plt.figure()
+# plt.subplot(2,1,1)
+
+# class ReplayBuffer:
+#     """
+#     A buffer for storing trajectories experienced by a PPO agent interacting
+#     with the environment, and using Generalized Advantage Estimation (GAE-Lambda)
+#     for calculating the advantages of state-action pairs.
+#     """
+
+#     def __init__(self, obs_dim, rbg_dim, inv_dim, max_req, act_dim, size, ass_poss,gamma=0.99, lam=0.95):
+#         self.max_req = max_req
+#         self.obs_buf = np.zeros(core2_to_SAC.combined_shape(size, obs_dim), dtype=np.float32)
+#         self.rbg_buf = np.zeros(core2_to_SAC.combined_shape(size, rbg_dim), dtype=np.int) #rbg占用情况
+#         self.inv_buf = np.zeros(core2_to_SAC.combined_shape(size, inv_dim), dtype=np.int) #无效请求标志位（掩码）
+#         self.obs2_buf = np.zeros(core2_to_SAC.combined_shape(size, obs_dim), dtype=np.float32)
+#         self.rbg2_buf = np.zeros(core2_to_SAC.combined_shape(size, rbg_dim), dtype=np.int) #rbg占用情况
+#         self.inv2_buf = np.zeros(core2_to_SAC.combined_shape(size, inv_dim), dtype=np.int) #无效请求标志位（掩码）
+#         self.act_buf = np.zeros(core2_to_SAC.combined_shape(size, act_dim*ass_poss), dtype=np.float32)
+#         self.rew_buf = np.zeros(size, dtype=np.float32)
+#         self.done_buf = np.zeros(size, dtype=np.float32)
+#         self.ptr, self.size, self.max_size = 0, 0, size
+#         self.tti2ptr = {}
+#         self.gamma, self.lam = gamma, lam
+#         self.buffer = collections.deque(maxlen = size)
+
+#     def store_pending(self, tti, obs, act, obs2):
+#         """
+#         Append one timestep of agent-environment interaction to the buffer.
+#         """
+#         self.tti2ptr[tti] = (obs, act, obs2)
+
+#     def store(self, obs, act, rew, next_obs, done):
+#         if self.ptr < self.max_size:  # buffer has to have room so you can store
+#             self.obs_buf[self.ptr] = obs['Requests']  
+#             self.rbg_buf[self.ptr] = obs['RbgMap']
+#             self.inv_buf[self.ptr] = obs['InvFlag']  
+
+#             self.obs2_buf[self.ptr] = next_obs['Requests']
+#             self.rbg2_buf[self.ptr] = next_obs['RbgMap']
+#             self.inv2_buf[self.ptr] = next_obs['InvFlag']
+            
+#             self.act_buf[self.ptr] = act
+#             self.rew_buf[self.ptr] = rew
+#             self.done_buf[self.ptr] = done
+#             self.ptr += 1
+#             return True
+
+#     def __len__(self):
+#         return self.ptr
+    
+#     def sample_batch(self, batch_size):
+#         idxs = np.random.randint(0, self.ptr, size=batch_size)
+#         batch = dict(obs = tuple(self.obs_buf[idxs]),
+#                      rbg = tuple(self.rbg_buf[idxs]),
+#                      inv = tuple(self.inv_buf[idxs]),
+#                      obs2 = tuple(self.obs2_buf[idxs]),
+#                      rbg2 = tuple(self.rbg2_buf[idxs]),
+#                      inv2 = tuple(self.inv2_buf[idxs]),
+#                      act=tuple(self.act_buf[idxs]),
+#                      rew=tuple(self.rew_buf[idxs]),
+#                      done=tuple(self.done_buf[idxs]))
+#         # batch = dict(obs = self.obs_buf[idxs],
+#         #              rbg = self.rbg_buf[idxs],
+#         #              inv = self.inv_buf[idxs],
+#         #              obs2 = self.obs2_buf[idxs],
+#         #              rbg2 = self.rbg2_buf[idxs],
+#         #              inv2 = self.inv2_buf[idxs],
+#         #              act=self.act_buf[idxs],
+#         #              rew=self.rew_buf[idxs],
+#         #              done=self.done_buf[idxs])
+#         return {k: torch.as_tensor(v, dtype=torch.float32) for k,v in batch.items()}
     
 class ReplayBuffer:
     def __init__(self,size):
 
         self.buffer = collections.deque(maxlen=size) 
-        self.ptr = 1
+        self.ptr = 0
     def store(self, obs, act, rew, next_obs, done): 
         obs1_buf = obs['Requests']
         rbg1_buf = obs['RbgMap']
@@ -713,7 +785,7 @@ if __name__ == '__main__':
     #     vf_lr=1e-4, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=50,
     #     logger_kwargs=logger_kwargs, use_cuda=True)
     sac(satellite_run, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs={"hidden_sizes": (128,256,128)}, seed=0, 
-        steps_per_epoch=50, epochs=5000, replay_size=int(5e3), gamma=0.98, 
-        actor_lr=1e-3, critic_lr = 1e-2, alpha=0.01, alpha_Ir=1e-2, target_entropy=-1, tau=0.005,
-        batch_size=128, update_after=200, 
+        steps_per_epoch=50, epochs=5000, replay_size=int(10000), gamma=0.98, 
+        actor_lr=1e-3, critic_lr = 1e-2, alpha=0.005, alpha_Ir=1e-2, target_entropy=-1, tau=0.005,
+        batch_size=128, update_after=500, 
         max_ep_len=50, logger_kwargs=logger_kwargs, save_freq=1, use_cuda=True)

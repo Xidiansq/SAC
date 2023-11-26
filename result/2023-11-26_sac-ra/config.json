@@ -1,0 +1,48 @@
+{
+    "XUNHUAN":	false,
+    "ac_kwargs":	{
+        "hidden_sizes":	[
+            128,
+            256,
+            128
+        ]
+    },
+    "actor_critic":	"RA_ActorCritic",
+    "actor_lr":	0.001,
+    "alpha":	0.01,
+    "alpha_Ir":	0.01,
+    "batch_size":	128,
+    "critic_lr":	0.01,
+    "env_fn":	"satellite_run",
+    "epochs":	5000,
+    "exp_name":	"sac-ra",
+    "gamma":	0.98,
+    "logger":	{
+        "<spinup.utils.logx.EpochLogger object at 0x7fdbfd819d68>":	{
+            "epoch_dict":	{},
+            "exp_name":	"sac-ra",
+            "first_row":	true,
+            "log_current_row":	{},
+            "log_headers":	[],
+            "output_dir":	"/home/fly/sq/SAC/result/2023-11-26_sac-ra",
+            "output_file":	{
+                "<_io.TextIOWrapper name='/home/fly/sq/SAC/result/2023-11-26_sac-ra/progress.txt' mode='w' encoding='UTF-8'>":	{
+                    "mode":	"w"
+                }
+            }
+        }
+    },
+    "logger_kwargs":	{
+        "exp_name":	"sac-ra",
+        "output_dir":	"/home/fly/sq/SAC/result/2023-11-26_sac-ra"
+    },
+    "max_ep_len":	50,
+    "replay_size":	5000,
+    "save_freq":	1,
+    "seed":	0,
+    "steps_per_epoch":	50,
+    "target_entropy":	-1,
+    "tau":	0.005,
+    "update_after":	200,
+    "use_cuda":	true
+}
