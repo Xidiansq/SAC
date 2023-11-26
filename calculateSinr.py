@@ -54,7 +54,7 @@ class calculate_tool:
                         (12 * (10 ** (self.G_peak[beam_label - 1] / 10))) / self.gama) * np.square(
                     theta_matrix[i][j] / (70 * np.pi))
         self.angle = np.diag(theta_matrix)
-        print(self.angle)
+        # print(self.angle)
         # input()
         # print('len',self.angle)
         # print(theta_matrix)
@@ -123,7 +123,7 @@ class calculate_tool:
                     # print('nosiy', self.noisy)
                     sinr_matrix[i][j] = sinr
                     capa_matrix[i][j] = capa
-        print(sinr_matrix)
+        # print(sinr_matrix)
         # input()
         # print(self.G_peak)
         # print(self.PowerT_beam)
@@ -163,7 +163,7 @@ def get_beam_per_capcaity():
         # Gain_self = 10 * np.log10(tool.G_peak[i])
         power_self = 10 ** ((tool.G_peak[i] + tool.Gr_user + tool.loss_path) / 10) * (10 ** (tool.PowerT_beam[i] / 10))
         sinr = power_self / tool.noisy
-        print(sinr)
+        # print(sinr)
         cap = np.log2(sinr + 1) * tool.bw / 1000
         label.append(cap)
 

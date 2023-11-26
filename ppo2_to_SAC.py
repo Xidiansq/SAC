@@ -437,19 +437,19 @@ def sac(env_fn, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs=dict(), seed
         # print(td_target.shape)
         # input()
         critic_1_loss = torch.mean(
-            F.mse_loss(critic_1_q_values, td_target.detach()))
+            F.mse_loss(critic_1_q_values, td_target.detach().squeeze(-1)))
         # critic_2_q_values = ac.v2(inp).gather(1, actions)
         critic_2_q_values = ac.v2(inp)
         
         critic_2_loss = torch.mean(
-            F.mse_loss(critic_2_q_values, td_target.detach()))
+            F.mse_loss(critic_2_q_values, td_target.detach().squeeze(-1)))
         v1_optimizer.zero_grad()
         critic_1_loss.backward()
         v1_optimizer.step()
-        for name, param in ac.v2_target.named_parameters():  
-            if param.requires_grad:
-                print("aaaa",name)
-                # print("bbbbb",param.data) 
+        # for name, param in ac.v2_target.named_parameters():  
+        #     if param.requires_grad:
+        #         print("aaaa",name)
+        #         # print("bbbbb",param.data) 
         v2_optimizer.zero_grad()
         critic_2_loss.backward()
         v2_optimizer.step()
@@ -485,87 +485,6 @@ def sac(env_fn, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs=dict(), seed
 
         soft_update(ac.v1, ac.v1_target)
         soft_update(ac.v2, ac.v2_target)
-    # #Set up function for computing PPO policy loss
-    # def compute_loss_pi(data):
-    #     obs, rbg, inv, act, adv, logp_old = data['obs'], data['rbg'], data['inv'], data['act'], data['adv'], data[
-    #         'logp']
-    #     if use_cuda:
-    #         obs, rbg, inv, act, adv, logp_old = obs.to(device), rbg.to(device), inv.to(device), act.to(device), adv.to(device), logp_old.to(device)
-    #     pi, logp = ac.pi(obs, rbg, inv, act)
-    #     ratio = torch.exp(logp - logp_old)
-    #     clip_adv = torch.clamp(ratio, 1 - clip_ratio, 1 + clip_ratio) * adv
-    #     loss_pi = -(torch.min(ratio * adv, clip_adv)).mean()
-
-    #     # Useful extra info
-    #     approx_kl = (logp_old - logp).mean().item()
-    #     ent = entropy(pi).mean().item()
-    #     clipped = ratio.gt(1 + clip_ratio) | ratio.lt(1 - clip_ratio)
-    #     clipfrac = torch.as_tensor(clipped, dtype=torch.float32).mean().item()
-    #     pi_info = dict(kl=approx_kl, ent=ent, cf=clipfrac)
-
-    #     return loss_pi, pi_info
-
-    # # Set up function for computing value loss
-    # def compute_loss_v(data):
-    #     obs, rbg, inv, ret = data['obs'].float(), data['rbg'].float(), data['inv'].float(), data['ret'].float()
-    #     if use_cuda:
-    #         obs, rbg, inv, ret = obs.to(device), rbg.to(device), inv.to(device), ret.to(device)
-    #     inp = torch.cat((obs, rbg, inv), dim=1)
-    #     return ((ac.v(inp) - ret) ** 2).mean()
-
-    # # Set up optimizers for policy and value function
-    # pi_optimizer = Adam(ac.pi.parameters(), lr=pi_lr)
-    # vf_optimizer = Adam(ac.v.parameters(), lr=vf_lr)
-
-    # # # Set up model saving
-    # # logger.setup_pytorch_saver(ac)
-
-    # def update():
-    #     data = buf.get()
-    #     # print(data['obs'].shape)
-    #     # print(data['rbg'].shape)
-    #     # print(data['act'].shape)
-    #     # print(data['ret'].shape)
-    #     ac.train()
-
-    #     # Value function learning
-    #     v_l_old = None
-    #     for i in range(train_v_iters):
-    #         vf_optimizer.zero_grad()
-    #         loss_v = compute_loss_v(data)
-    #         if v_l_old is None:
-    #             v_l_old = loss_v.item()
-    #         loss_v.backward()
-    #         mpi_avg_grads(ac.v)  # average grads across MPI processes
-    #         vf_optimizer.step()
-
-    #     pi_l_old, pi_info_old = None, None
-    #     # Train policy with multiple steps of gradient descent
-    #     for i in range(train_pi_iters):
-    #         # print('-----------------------------------------')
-    #         pi_optimizer.zero_grad()
-    #         loss_pi, pi_info = compute_loss_pi(data)
-    #         # print(loss_pi,pi_info)
-    #         # input()
-    #         if pi_l_old is None:
-    #             pi_l_old, pi_info_old = loss_pi.item(), pi_info
-    #         loss_pi.backward()
-    #         mpi_avg_grads(ac.pi)  # average grads across MPI processes
-    #         pi_optimizer.step()
-    #         kl = mpi_avg(pi_info['kl'])
-    #         if kl > 50 * target_kl:
-    #             logger.log('Early stopping at step %d due to reaching max kl.' % i)
-    #             break
-    #             # ac.train()
-
-    #     # logger.store(StopIter=i)
-    #     # Log changes from update
-    #     ac.eval()
-    #     kl, ent, cf = pi_info['kl'], pi_info_old['ent'], pi_info['cf']
-    #     # logger.store(LossPi=pi_l_old, LossV=v_l_old,
-    #     #              KL=kl, Entropy=ent, ClipFrac=cf,
-    #     #              DeltaLossPi=(loss_pi.item() - pi_l_old),
-    #     #              DeltaLossV=(loss_v.item() - v_l_old))
 
     def action_reshape_toOnehot(actions_dimensional):
         # actions_dimensional = actions_dimensional.cpu().numpy().flatten()
@@ -602,8 +521,9 @@ def sac(env_fn, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs=dict(), seed
             obs = torch.as_tensor(o["Requests"], dtype=torch.float32)
             rbg = torch.as_tensor(o["RbgMap"], dtype=torch.int32)
             fla = torch.as_tensor(o["InvFlag"], dtype=torch.int32)
-            print('-'*50)
+            # print('-'*50)
             a,logp, pi = ac.step(obs, rbg, fla)
+            # print('-'*50)
             # print(a)
             info, next_o, extra, d = env.step(epoch, a)
             """
@@ -664,23 +584,7 @@ def sac(env_fn, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs=dict(), seed
             terminal = timeout or d
             # epoch_ended = (len(buf) % 50) == 0
             epoch_ended = (buf.ptr % 50) == 0
-                # print('ep_len', ep_len, 'len(buf)', len(buf))
-                # if epoch_ended and not (terminal):
-                #     print('Warning: trajectory cut off by epoch at %d steps.' % ep_len, flush=True)
-                # if trajectory didn't reach terminal state, bootstrap value target
-                # if timeout or epoch_ended:
 
-                #     # if isinstance(o, gym.spaces.Box):
-                #     #     _, v, _ = ac.step(torch.as_tensor(o, dtype=torch.float32))
-                #     # else:
-                #     obs = torch.as_tensor(o["Requests"], dtype=torch.float32)
-                #     rbg = torch.as_tensor(o["RbgMap"], dtype=torch.int32)
-                #     fla = torch.as_tensor(o["InvFlag"], dtype=torch.int32)
-                #     _, _, _ = ac.step(obs, rbg, fla)
-                # else:
-                #     v = 0
-
-                # buf.finish_path(v)  # 一个episode
             epoch_reward += ep_ret
             epoch_capacity += ep_capacity
             epoch_tx += ep_tx
