@@ -430,7 +430,7 @@ def initial_all_user(maxdistance, numofuser,beam_position, ontime=10, offtime=2)
                       280000, ontime, offtime) for i in range(numofuser)]
     
     userlist = userlist1 + userlist2 + userlist3
-    print("len", len(userlist))
+    # print("len", len(userlist))
     return userlist
     
 

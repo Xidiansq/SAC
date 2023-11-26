@@ -635,11 +635,11 @@ def sac(env_fn, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs=dict(), seed
         ax.cla()  # clear plot
         ax.plot(x, y, 'r', lw=1)  # draw line chart
         plt.pause(0.1)
-        plt.savefig('./liangceng.jpg')
+        plt.savefig('./SAC/liangceng.jpg')
         start_time = time.time()
         # update()
         end_time = time.time()
-        print(end_time - start_time)
+        # print(end_time - start_time)
         logger.log_tabular('epoch       ', epoch)
         logger.log_tabular("ep_ret      ", ep_ret)
         # logger.log_tabular("ep_bler      ", ep_r1)
@@ -681,7 +681,7 @@ if __name__ == '__main__':
     #     q[t] += 1
     # print(q)
     # input()
-    trace_dir = os.getcwd() + "/result"
+    trace_dir = os.getcwd() + "./SAC/result"
     logger_kwargs = setup_logger_kwargs("sac-ra", data_dir=trace_dir, datestamp=True)
     # ppo(satellite_run,
     #     actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs={"hidden_sizes": (128,256,128)},#"hidden_sizes": (128,256, 512, 256)}
@@ -690,6 +690,6 @@ if __name__ == '__main__':
     #     logger_kwargs=logger_kwargs, use_cuda=True)
     sac(satellite_run, actor_critic=core2_to_SAC.RA_ActorCritic, ac_kwargs={"hidden_sizes": (128,256,128)}, seed=0, 
         steps_per_epoch=50, epochs=5000, replay_size=int(10000), gamma=0.98, 
-        actor_lr=1e-3, critic_lr = 1e-2, alpha=0.005, alpha_Ir=1e-2, target_entropy=-1, tau=0.005,
+        actor_lr=1e-4, critic_lr = 1e-4, alpha=0.005, alpha_Ir=1e-4, target_entropy=-1, tau=0.005,
         batch_size=128, update_after=500, 
         max_ep_len=50, logger_kwargs=logger_kwargs, save_freq=1, use_cuda=True)
